@@ -17,6 +17,22 @@ class Router {
     ping(e) {
         e.channel.send(`Pong latency is ${Date.now() - e.createdTimestamp}ms\nDiscord API Latency is ${Math.round(this.client.ws.ping)}ms`);
     }
+    play(e) {
+
+    }
+    pause(e) {
+        
+    }
+    resume(e) {
+        
+    }
+    dc(e) {
+        
+    }
+    disconnect(e) {
+        
+    }
+    
 }
 
 module.exports = Router;
