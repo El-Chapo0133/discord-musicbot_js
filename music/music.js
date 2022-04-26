@@ -2,7 +2,6 @@ const playlistsFilename = "./resources/playlists.json";
 
 const Queue = require("./queue.js");
 const files = require('../utils/files.js');
-const RegexMatch = require("../utils/regex.js");
 
 const ytdl = require('ytdl-core');
 
@@ -12,10 +11,7 @@ const {
 	createAudioPlayer,
 	createAudioResource,
 	entersState,
-	StreamType,
-	AudioPlayerStatus,
 	VoiceConnectionStatus,
-        EndBehaviorType,
 } = require('@discordjs/voice');
 const { Message } = require("discord.js");
 
