@@ -17,6 +17,7 @@ class Queue {
                 });
 
                 this.music.musicAdded();
+
         }
         addFullItem(item) {
                 this.queue.push(item);
@@ -34,7 +35,7 @@ class Queue {
         }
 
         first () {
-                if (this.queue.length == 0)
+                if (this.queue.length === 0)
                         return null;
                 return this.queue[0];
         }

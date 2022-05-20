@@ -25,6 +25,9 @@ class Music {
 
                 this.player.on('stateChange', (_, newState) => {
                         if (newState.status === 'idle') {
+                                if (this.queue.isEmpty())
+                                        return;
+                                
                                 let lastPlayed = null;
                                 if (!this.settings.loop)
                                         lastPlayed = this.queue.shift();
@@ -38,8 +41,10 @@ class Music {
 
                 this.settings = {
                         loop: false,
-                        loopqueue: false,
+                        loopqueue: true,
                 }
+
+                this.currentPlaylistIndex = null;
         }
 
         skip() {
@@ -54,6 +59,7 @@ class Music {
         
         async musicAdded() {
                 // console.log(this.queue.last(), this.queue.count());
+                
                 if (!this.isPlaying())
                         this.playFirstItemFromQueue();
         }
@@ -68,9 +74,14 @@ class Music {
         }
 
         quitVoiceChannel() {
+                this.player.stop();
+                this.connection.disconnect();
                 this.connection.destroy();
                 this.connection = null;
                 this.queue.clear();
+                this.currentPlaylistIndex = null;
+                this.loop = false;
+                this.loopqueue = true;
         }
         getQueueString() {
                 let queueStringed = "";
@@ -131,10 +142,14 @@ class Music {
                 }
                 const index = this.getPlaylistIndexFromName(entry);
                 if (index == -1)
-                        return true;
+                    return true;
                 return this.loadPlaylistFromIndex(index);
         }
-
+        addMusicToPlaylist(item) {
+                let json = JSON.parse(files.readFile(playlistsFilename));
+                json.playlists[this.currentPlaylistIndex].songs.push(item);
+                files.writeFile(playlistsFilename, JSON.stringify(json));
+        }
         loadPlaylistFromIndex(entry) {
                 const entryInt = parseInt(entry);
                 if (entryInt >= this.playlists.length)
@@ -142,6 +157,7 @@ class Music {
                 this.playlists[entryInt].songs.forEach(item => {
                         this.queue.addFullItem(item);
                 });
+                this.currentPlaylistIndex = entryInt;
                 this.playFirstItemFromQueue();
                 return false;
         }
@@ -154,23 +170,25 @@ class Music {
         }
 
 
-        loop() {
+        switchLoop() {
                 this.settings.loopqueue = false;
                 this.settings.loop = !this.settings.loop;
         }
-        loopQueue() {
+        switchLoopQueue() {
                 this.settings.loop = false;
                 this.settings.loopqueue = !this.settings.loopqueue;
         }
 }
 
 function isInputInt(input) {
-        try {
-                parseInt(input);
-                return true;
-        } catch {
-                return false;
-        }
+        // try {
+        //         parseInt(input);
+        //         return true;
+        // } catch {
+        //         return false;
+        // }
+        // console.log(parseInt(input).toString() == "NaN");
+        return parseInt(input).toString() != "NaN";
 }
 
 module.exports = Music;
