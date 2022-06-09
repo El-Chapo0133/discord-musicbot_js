@@ -28,13 +28,25 @@ class Music {
                                 if (this.queue.isEmpty())
                                         return;
                                 
+                                // loop = true
+                                // doesn't shift, loopqueue = false
+                                // 
+                                // loopqueue = true
+                                // shift, addFullItem, loop = false
+                                // 
+                                // loop = false && loopqueue = false
+                                // shift, doesn't addFullItem
+
+                                // console.log(`${this.settings.loop} ${this.settings.loopqueue} ${this.queue.count()}`);
+
                                 let lastPlayed = null;
                                 if (!this.settings.loop)
                                         lastPlayed = this.queue.shift();
-                                if (this.settings.loopqueue)
+                                if (this.settings.loopqueue && lastPlayed != null)
                                         this.queue.addFullItem(lastPlayed);
-                                if (this.queue.isEmpty())
-                                        return this.quitVoiceChannel();
+
+                                // console.log(`${this.settings.loop} ${this.settings.loopqueue} ${this.queue.count()}`);
+                                        
                                 this.playFirstItemFromQueue();
                         }
                 });
@@ -52,8 +64,7 @@ class Music {
                 let item = this.queue.shift();
                 if (this.settings.loopqueue)
                         this.queue.addFullItem(item);
-                if (this.queue.isEmpty())
-                        return this.quitVoiceChannel();
+
                 this.playFirstItemFromQueue();
         }
         
@@ -115,6 +126,9 @@ class Music {
         }
         
         playFirstItemFromQueue() {
+                if (this.queue.isEmpty())
+                        return this.quitVoiceChannel();
+
                 let resource = createAudioResource(ytdl(this.queue.first().url, { filter: "audioonly" }));
 
                 this.player.play(resource);

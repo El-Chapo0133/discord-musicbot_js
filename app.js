@@ -11,13 +11,13 @@ const RegexMatch = require("./utils/regex.js");
 
 const { Client, Intents, MessageEmbed } = require('discord.js');
 
-
+const availableCommands = require('./utils/availableCommands.js');
+const files = require("./utils/files.js");
 
 let envVariables = new EnvVariables();
 envVariables.load_tokens();
 
 let music = new Music();
-
   
 const client = new Client(
 	{
@@ -42,7 +42,7 @@ client.on('messageCreate', async (message) => {
 	const command = message.content.split(' ')[0].toLowerCase();
 	const args = message.content.split(' ').slice(1).join(' ');
 
-	if (command === '-play') {
+	if (command === availableCommands[0]) {
 		const channel = message.member.voice.channel;
 
 		if (channel) {
@@ -68,17 +68,17 @@ client.on('messageCreate', async (message) => {
 		} else {
 			message.reply('Join a voice channel then try again!');
 		}
-	} else if (command === '-quit') {
+	} else if (command === availableCommands[1]) {
 		if (!music.isInVoiceChannel())
 			return message.reply("I cannot quit anything °°'");
 		music.quitVoiceChannel();
 		message.reply("Voice channel exited");
-	} else if (command === '-releaseplaylist') {
+	} else if (command === availableCommands[2]) {
 		music.currentPlaylistIndex = null;
-	} else if (command === '-skip') {
+	} else if (command === availableCommands[3]) {
 		music.skip();
 		message.react('👍');
-	} else if (command === '-queue') {
+	} else if (command === availableCommands[4]) {
 		if (music.queue.count() === 0)
 			message.reply("No music in queue ¯\\_(ツ)_/¯");
 		
@@ -92,16 +92,16 @@ client.on('messageCreate', async (message) => {
 			);
 		
 		message.channel.send({ embeds: [queueEmbed] });
-	} else if (command === '-createplaylist') {
+	} else if (command === availableCommands[5]) {
 		if (args == "")
 			return message.reply("Please give a name to your playlist");
 		const result = music.addPlaylist(args);
 		if (!result)
 			return message.reply("I cannot create an empty playlist :/");
 		message.reply(`The playlist '${args}' is now registred and available :D`);
-	} else if (command === '-listplaylists') {
+	} else if (command === availableCommands[6]) {
 		if (music.playlists.length === 0)
-			message.reply("No playlists available/registred ¯\\_(ツ)_/¯");
+			return message.reply("No playlists available/registred ¯\\_(ツ)_/¯");
 		
 		let playlistsEmbed = new MessageEmbed()
 			.setTitle('All playlists')
@@ -110,7 +110,7 @@ client.on('messageCreate', async (message) => {
 			);
 		
 		message.channel.send({ embeds: [playlistsEmbed] });
-	} else if (command === '-loadplaylist') {
+	} else if (command === availableCommands[7]) {
 		const channel = message.member.voice.channel;
 
 		if (channel) {
@@ -122,21 +122,28 @@ client.on('messageCreate', async (message) => {
 					
 				const error = music.loadPlaylistToQueue(args);
 				if (error)
-					return message.reply(`There's no playlist assigned to '${args}' :/\ntry -listPlaylists to get all registred playlists`);
-				message.reply(`Your playlist '${args}' has been loaded :D`);
+					return message.reply(`There's no playlist assigned to '${ args }' :/\ntry -listPlaylists to get all registred playlists`);
+				message.reply(`Your playlist '${ args }' has been loaded :D`);
 			} catch (error) {
 				console.error(error);
 			}
 		} else {
 			message.reply('Join a voice channel then try again!');
 		}
-	} else if (command === '-loop') {
+	} else if (command === availableCommands[8]) {
 		music.switchLoop();
 		message.react('👍');
-	} else if (command === '-loopqueue') {
+	} else if (command === availableCommands[9]) {
 		music.switchLoopQueue();
 		message.react('👍');
-	}
+	} else if (command === availableCommands[10]) {
+                message.channel.send(`:ping_pong: Latency is ${ Date.now() - message.createdTimestamp }ms\n:globe_with_meridians: Discord API Latency is ${ Math.round(client.ws.ping) }ms`);
+        } else if (command === availableCommands[11]) {
+                message.reply(`All commands:\n${ availableCommands.join('\n') }`);
+        } else if (command === availableCommands[12]) {
+                let version = files.readFile("./version");
+                message.reply(`My current version is: '${ version.toString() }'`);
+        }
 });
 
 client.login(envVariables.BOT_TOKEN);
