@@ -24,6 +24,10 @@ class Music {
                 this.player = createAudioPlayer();
 
                 this.player.on('stateChange', (_, newState) => {
+                        console.log(`Bot is now ${newState.status}`);
+                        if (newState.status === 'autopaused') {
+                                return;
+                        }
                         if (newState.status === 'idle') {
                                 if (this.queue.isEmpty())
                                         return;

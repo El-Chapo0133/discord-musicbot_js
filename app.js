@@ -137,7 +137,7 @@ client.on('messageCreate', async (message) => {
 		music.switchLoopQueue();
 		message.react('👍');
 	} else if (command === availableCommands[10]) {
-                message.channel.send(`:ping_pong: Latency is ${ Date.now() - message.createdTimestamp }ms\n:globe_with_meridians: Discord API Latency is ${ Math.round(client.ws.ping) }ms`);
+                message.channel.send(`:ping_pong: Latency is ${ message.createdTimestamp - Date.now() }ms\n:globe_with_meridians: Discord API Latency is ${ Math.round(client.ws.ping) }ms`);
         } else if (command === availableCommands[11]) {
                 message.reply(`All commands:\n${ availableCommands.join('\n') }`);
         } else if (command === availableCommands[12]) {

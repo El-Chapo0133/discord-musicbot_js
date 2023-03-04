@@ -23,14 +23,11 @@
   },
   "homepage": "https://github.com/El-Chapo0133/discord-musicbot_js#readme",
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "@discordjs/voice": "^0.9.0",
-    "discord-api-types": "^0.32.0",
+    "@discordjs/voice": "^0.14.0",
     "discord.js": "^13.6.0",
     "dotenv": "^16.0.0",
     "ffmpeg-static": "^4.4.1",
-    "sodium": "^3.0.2",
-    "ytdl-core": "^4.11.0"
+    "libsodium-wrappers": "^0.7.11",
+    "ytdl-core": "^4.11.2"
   }
 }
